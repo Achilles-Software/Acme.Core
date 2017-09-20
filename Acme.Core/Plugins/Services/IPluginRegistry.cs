@@ -11,7 +11,7 @@
 #region Namespaces
 
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 #endregion
 
@@ -31,9 +31,9 @@ namespace Achilles.Acme.Plugins.Services
 
         IPlugin Get( Guid id );
 
-        IQueryable<IPlugin> GetAll();
+        IEnumerable<IPlugin> GetAll();
 
-        IQueryable<IPlugin> GetByType( int pluginType );
+        IEnumerable<IPlugin> GetByType( int pluginType );
 
         #endregion
     }

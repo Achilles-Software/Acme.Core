@@ -52,12 +52,12 @@ namespace Achilles.Acme.Plugins.Services
             return GetAll().FirstOrDefault<IPlugin>( p => p.Id == id );
         }
 
-        public IQueryable<IPlugin> GetAll()
+        public IEnumerable<IPlugin> GetAll()
         {
-            return plugins.AsQueryable<IPlugin>();
+            return plugins;//..Select<IPlugin>( p => p );
         }
 
-        public IQueryable<IPlugin> GetByType( int pluginType )
+        public IEnumerable<IPlugin> GetByType( int pluginType )
         {
             return GetAll().Where( p => p.Type == pluginType );
         }

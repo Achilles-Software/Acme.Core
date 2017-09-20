@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.Serialization;
 
 using System.Text.Encodings.Web;
@@ -81,7 +82,7 @@ namespace Achilles.Acme.GeoLocation
 
         public const string GoogleMapsServiceUrl = "http://maps.google.com/maps/api/geocode/json?address={0}&sensor=false";
 
-        #endregion 
+        #endregion
 
         #region Public Methods
 
@@ -89,16 +90,20 @@ namespace Achilles.Acme.GeoLocation
         {
             string url = String.Format( GoogleMapsServiceUrl, UrlEncoder.Default.Encode( address ) );
 
-            var request = (HttpWebRequest)HttpWebRequest.Create( url );
-            //request.Headers.Add( HttpRequestHeader.AcceptEncoding, "gzip,deflate" );
-            //request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-            var response = await request.GetResponseAsync();
-            var responseStream = response.GetResponseStream();
-
-            using ( var sr = new StreamReader( responseStream ) )
+            using ( HttpClient client = new HttpClient() )
             {
-                return JsonConvert.DeserializeObject<GeoResponse>( sr.ReadToEnd() );
+                using ( HttpResponseMessage response = await client.GetAsync( url ) )
+                {
+                    //request.Headers.Add( HttpRequestHeader.AcceptEncoding, "gzip,deflate" );
+                    //request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+                    var responseStream = await response.Content.ReadAsStreamAsync();
+
+                    using ( var sr = new StreamReader( responseStream ) )
+                    {
+                        return JsonConvert.DeserializeObject<GeoResponse>( sr.ReadToEnd() );
+                    }
+                }
             }
         }
 
