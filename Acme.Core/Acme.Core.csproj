@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.1.0</Version>
     <Authors>Todd J. Thomson</Authors>
     <Company>Achilles Software</Company>
     <Product>Achilles Acme CMS</Product>
@@ -13,8 +12,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Acme.Composition" Version="0.3.0" />
+    <None Include="..\..\Build\Version.props" Link="Version.props" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <ProjectReference Include="..\..\Acme.Composition\Acme.Composition\Acme.Composition.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <PackageReference Include="Achilles.Acme.Composition" Version="'$(VersionPrefix)'" />
+  </ItemGroup>
 </Project>
