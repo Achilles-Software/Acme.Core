@@ -2,8 +2,4 @@
 
   <Import Project="Version.props" />
 
-  <PropertyGroup>
-    <VersionSuffix Condition="'$(VersionSuffix)'!='' AND '$(BuildNumber)' != ''">$(VersionSuffix)-$(BuildNumber)</VersionSuffix>
-  </PropertyGroup>
-
 </Project>
