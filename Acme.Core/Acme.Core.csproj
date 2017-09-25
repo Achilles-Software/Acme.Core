@@ -23,7 +23,7 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageReference Include="Acme.Composition" Version="$(VersionPrefix)-*" />
+        <PackageReference Include="Acme.Composition" Version="0.9.0-pre" />
       </ItemGroup>
     </Otherwise>
   </Choose>
