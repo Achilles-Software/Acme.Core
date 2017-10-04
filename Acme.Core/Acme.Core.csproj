@@ -3,11 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Authors>Todd J. Thomson</Authors>
-    <Company>Achilles Software</Company>
-    <Product>Achilles Acme CMS</Product>
-    <Description>Achilles Acme CMS Core library</Description>
-    <PackageReleaseNotes>Prerelease package</PackageReleaseNotes>
+    <Description>Achilles Acme CMS Core library package</Description>
+    <PackageProjectUrl>https://github.com/Achilles-Software/Acme.Core</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/Achilles-Software/Acme.Core/icon.png</PackageIconUrl>    
     <RootNamespace>Achilles.Acme.Core</RootNamespace>
   </PropertyGroup>
 
@@ -24,7 +22,7 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageReference Include="Acme.Composition" Version="0.9.0-ci-*" />
+        <PackageReference Include="Acme.Composition" Version="$(VersionPrefix)-$(VersionSuffix)-*" />
       </ItemGroup>
     </Otherwise>
   </Choose>
