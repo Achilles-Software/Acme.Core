@@ -10,28 +10,67 @@
 
 #region Namespaces
 
+using Achilles.Acme.Core.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-//using System.ServiceModel.Syndication;
+using Microsoft.SyndicationFeed;
+using Microsoft.SyndicationFeed.Rss;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 #endregion
 
 namespace Achilles.Acme.Actions
 {
-    //public class RssResult : ActionResult
-    //{
-    //    public SyndicationFeed Feed { get; set; }
+    public class RssResult : ActionResult
+    {
+        #region Properties/Fields
 
-    //    public override void ExecuteResult( ActionContext context )
-    //    {
-    //        context.HttpContext.Response.ContentType = "application/rss+xml";
+        public SyndicationFeed RssFeed { get; private set; }
 
-    //        Rss20FeedFormatter rssFormatter = new Rss20FeedFormatter( this.Feed, false );
+        #endregion
 
-    //        using ( XmlWriter writer = XmlWriter.Create( context.HttpContext.Response.ToString() ) )// .Output ) )
-    //        {
-    //            rssFormatter.WriteTo( writer );
-    //        }
-    //    }
-    //}
+        #region Constructor
+
+        public RssResult( SyndicationFeed rssFeed )
+        {
+            RssFeed = rssFeed;
+        }
+
+        #endregion
+
+        public async override Task ExecuteResultAsync( ActionContext context )
+        {
+            context.HttpContext.Response.ContentType = "application/rss+xml";
+
+            using ( var xmlWriter = CreateXmlWriter( context.HttpContext.Response ) )
+            {
+                var feedWriter = new RssFeedWriter( xmlWriter );
+
+                await feedWriter.WriteTitle( RssFeed.Title );
+                await feedWriter.WriteDescription( RssFeed.Description );
+                await feedWriter.WriteCopyright( RssFeed.Copyright );
+                await feedWriter.WriteLanguage( new System.Globalization.CultureInfo( RssFeed.Language ) );
+                await feedWriter.Write( new SyndicationLink( RssFeed.BaseUri ) );
+
+                // Add Items
+                foreach ( var item in RssFeed.Items )
+                {
+                    await feedWriter.Write( item );
+                }
+
+                await feedWriter.Flush();
+            }
+        }
+
+        private XmlWriter CreateXmlWriter( HttpResponse response )
+        {
+            return XmlWriter.Create( response.Body, new XmlWriterSettings()
+            {
+                Async = true,
+                Encoding = Encoding.UTF8
+            } );
+        }
+    }
 }
