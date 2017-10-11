@@ -40,6 +40,8 @@ namespace Achilles.Acme.Actions
 
         #endregion
 
+        #region Public Methods
+
         public async override Task ExecuteResultAsync( ActionContext context )
         {
             context.HttpContext.Response.ContentType = "application/rss+xml";
@@ -64,6 +66,10 @@ namespace Achilles.Acme.Actions
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
         private XmlWriter CreateXmlWriter( HttpResponse response )
         {
             return XmlWriter.Create( response.Body, new XmlWriterSettings()
@@ -72,5 +78,7 @@ namespace Achilles.Acme.Actions
                 Encoding = Encoding.UTF8
             } );
         }
+
+        #endregion
     }
 }

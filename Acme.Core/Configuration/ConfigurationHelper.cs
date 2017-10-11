@@ -21,22 +21,13 @@ namespace Achilles.Acme.Configuration
 {
     public class ConfigurationHelper
     {
-        private static IConfigurationRoot _configuration;
+        private static IConfiguration _configuration;
 
-        public static IConfigurationRoot GetConfiguration( IServiceCollection services )
+        public static IConfiguration GetConfiguration( IServiceCollection services )
         {
             if ( _configuration == null )
             {
-                var environment = GetServiceFromCollection<IHostingEnvironment>( services );
-                
-                // TJT: Changed in 2.0. I believe this configuration is no longer needed.
-
-                //var builder = new ConfigurationBuilder()
-                //    .SetBasePath( environment.ContentRootPath )
-                //    .AddJsonFile( "appsettings.json", optional: true, reloadOnChange: true )
-                //    .AddJsonFile( $"appsettings.{environment.EnvironmentName}.json", optional: true );
-
-                //_configuration = builder.Build();
+                _configuration = GetServiceFromCollection<IConfiguration>( services );
 
                 return _configuration;
             }
