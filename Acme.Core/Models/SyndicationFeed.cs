@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 
-namespace Achilles.Acme.Core.Models
+namespace Achilles.Acme.Models
 {
     public class SyndicationFeed
     {

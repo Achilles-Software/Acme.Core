@@ -3,14 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <RootNamespace>Achilles.Acme</RootNamespace>
     <Description>Achilles Acme CMS Core library package</Description>
     <PackageProjectUrl>https://github.com/Achilles-Software/Acme.Core</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/Achilles-Software/Acme.Core/icon.png</PackageIconUrl>    
-    <RootNamespace>Achilles.Acme.Core</RootNamespace>
+    <PackageIconUrl>https://github.com/Achilles-Software/Acme.Core/icon.png</PackageIconUrl>
+    <PackageTags>Acme;CMS</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.0" />    
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.0" />
   </ItemGroup>
@@ -19,11 +22,13 @@
     <When Condition="'$(Configuration)' == 'Debug' AND Exists('..\..\..\Acme')">
       <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <ProjectReference Include="..\..\Acme.Composition\Acme.Composition\Acme.Composition.csproj" />
+        <ProjectReference Include="..\..\Acme.Security\Acme.Security\Acme.Security.csproj" />
       </ItemGroup>
     </When>
     <Otherwise>
       <ItemGroup>
         <PackageReference Include="Acme.Composition" Version="$(VersionPrefix)-$(VersionSuffix)-*" />
+        <PackageReference Include="Acme.Security" Version="$(VersionPrefix)-$(VersionSuffix)-*" />        
       </ItemGroup>
     </Otherwise>
   </Choose>

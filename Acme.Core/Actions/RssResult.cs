@@ -10,7 +10,7 @@
 
 #region Namespaces
 
-using Achilles.Acme.Core.Models;
+using Achilles.Acme.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.SyndicationFeed;
