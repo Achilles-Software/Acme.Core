@@ -27,14 +27,14 @@ using System;
 namespace Achilles.Acme.DependencyInjection
 {
     /// <summary>
-    /// Extension methods for adding ACME services to an <see cref="IServiceCollection" />.
+    /// Extension methods for adding Acme services to an <see cref="IServiceCollection" />.
     /// </summary>
     public static class AcmeServiceCollectionExtensions
     {
         #region Public Methods
 
         /// <summary>
-        /// Adds ACME services to the specified <see cref="IServiceCollection" />.
+        /// Adds Acme services to the specified <see cref="IServiceCollection" />.
         /// </summary>
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
         /// <returns>An <see cref="IAcmeBuilder"/> that can be used to further configure the ACME services.</returns>
@@ -49,7 +49,7 @@ namespace Achilles.Acme.DependencyInjection
         }
 
         /// <summary>
-        /// Adds ACME services to the specified <see cref="IServiceCollection" />.
+        /// Adds Acme services to the specified <see cref="IServiceCollection" />.
         /// </summary>
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
         /// <param name="setupAction">An <see cref="Action{AcmeOptions}"/> to configure the provided <see cref="AcmeOptions"/>.</param>
@@ -68,17 +68,10 @@ namespace Achilles.Acme.DependencyInjection
                 services.Configure( setupAction );
             }
 
-            // TJT: Mvc should be passed into ACME.
+            // TODO: Remove this need for asp.net core 2...
 
-            // TODO: Review this
-            // ACME is built on Mvc services...
-            //services.AddMvc( options =>
-            //{
-            //    options.Filters.Add( typeof( GlobalExceptionFilter ) );
-            //} );
-
-            // ACME depends on IHttpContextAccessor which Hosting doesn't add  by default
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // Acme depends on IHttpContextAccessor which Hosting doesn't add  by default
+            // services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // The plugin registry service is part of the core
             var pluginRegistry = new PluginRegistry();
