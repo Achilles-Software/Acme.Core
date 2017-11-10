@@ -13,6 +13,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Achilles.Acme.Data.Services;
 
 #endregion
 
@@ -20,41 +22,64 @@ namespace Achilles.Acme.Plugins.Services
 {
     public class PluginRegistry : IPluginRegistry
     {
-        private List<IPlugin> plugins;
+        private static int index = 1;
+        private List<IPlugin> plugins = new List<IPlugin>();
 
         #region Constructor(s)
 
         public PluginRegistry()
         {
-            this.plugins = new List<IPlugin>( 10 );
         }
 
         #endregion
 
-        #region Add/Remove Methods
+        #region Add
 
         public void Add( IPlugin plugin )
         {
+            plugin.Id = index++;
+
             plugins.Add( plugin );
         }
 
-        public void Clear()
+        #endregion
+
+        #region CRUD Methods
+
+        public Task<ServiceResult> CreateAsync( IPlugin plugin )
         {
-            plugins.Clear();
+            Add( plugin );
+
+            return Task.FromResult( ServiceResult.Success );
+        }
+
+        public Task<ServiceResult> DeleteAsync( IPlugin item )
+        {
+            throw new NotSupportedException();
+        }
+
+        public Task<ServiceResult> EditAsync( IPlugin item )
+        {
+            throw new NotSupportedException();
         }
 
         #endregion
 
         #region Query Methods
 
-        public IPlugin Get( Guid id )
+        public IPlugin Get( Guid uid )
         {
-            return GetAll().FirstOrDefault<IPlugin>( p => p.Id == id );
+            return plugins.FirstOrDefault( p => p.UId == uid );
         }
 
-        public IEnumerable<IPlugin> GetAll()
+        public IQueryable<IPlugin> GetAll()
         {
-            return plugins;//..Select<IPlugin>( p => p );
+            return plugins.AsQueryable();
+        }
+
+        public Task<IPlugin> GetAsync( int id )
+        {
+            return Task.FromResult( plugins.FirstOrDefault( p => p.Id == id ) );
         }
 
         public IEnumerable<IPlugin> GetByType( int pluginType )

@@ -10,6 +10,7 @@
 
 #region Namespaces
 
+using Achilles.Acme.Data.Services;
 using System;
 using System.Collections.Generic;
 
@@ -17,21 +18,17 @@ using System.Collections.Generic;
 
 namespace Achilles.Acme.Plugins.Services
 {
-    public interface IPluginRegistry
+    public interface IPluginRegistry : IService<IPlugin>
     {
-        #region Add/Remove methods
+        #region Add
 
         void Add( IPlugin plugin );
-
-        void Clear();
 
         #endregion
 
         #region Query Methods
 
         IPlugin Get( Guid id );
-
-        IEnumerable<IPlugin> GetAll();
 
         IEnumerable<IPlugin> GetByType( int pluginType );
 

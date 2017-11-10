@@ -10,33 +10,27 @@
 
 #region Namespaces
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
-
-using Achilles.Acme.Composition;
-using Achilles.Acme.Composition.Modules;
 
 #endregion
 
-namespace Achilles.Acme.DependencyInjection
+namespace Achilles.Acme.Builder
 {
     /// <summary>
-    /// The inteface for configuring ACME services.
+    /// The inteface for configuring Acme services.
     /// </summary>
     public interface IAcmeBuilder
     {
         /// <summary>
-        /// Gets the <see cref="IServiceCollection"/> where ACME services are configured.
+        /// Gets the <see cref="IServiceCollection"/> where Acme services are configured.
         /// </summary>
         IServiceCollection Services { get; }
 
         /// <summary>
-        /// Gets the <see cref="CompositionManager"/> where <see cref="ComposablePart"/>s are configured.
+        /// Gets the <see cref="ApplicationPartManager"/> where <see cref="ApplicationPart"/>s
+        /// are configured.
         /// </summary>
-        ComposablePartManager CompositionManager { get; }
+        ApplicationPartManager PartManager { get; }
     }
 }

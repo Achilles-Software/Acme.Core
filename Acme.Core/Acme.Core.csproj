@@ -22,13 +22,13 @@
     <When Condition="'$(Configuration)' == 'Debug' AND Exists('..\..\..\Acme')">
       <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <ProjectReference Include="..\..\Acme.Composition\Acme.Composition\Acme.Composition.csproj" />
-        <ProjectReference Include="..\..\Acme.Security\Acme.Security\Acme.Security.csproj" />
+        <ProjectReference Include="..\..\Acme.Data\Acme.Data\Acme.Data.csproj" />        
       </ItemGroup>
     </When>
     <Otherwise>
       <ItemGroup>
         <PackageReference Include="Acme.Composition" Version="$(VersionPrefix)-$(VersionSuffix)-*" />
-        <PackageReference Include="Acme.Security" Version="$(VersionPrefix)-$(VersionSuffix)-*" />        
+        <PackageReference Include="Acme.Data" Version="$(VersionPrefix)-$(VersionSuffix)-*" />        
       </ItemGroup>
     </Otherwise>
   </Choose>

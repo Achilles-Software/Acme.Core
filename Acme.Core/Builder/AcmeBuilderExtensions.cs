@@ -16,10 +16,10 @@ using System;
 
 #endregion
 
-namespace Achilles.Acme.DependencyInjection
+namespace Achilles.Acme.Builder
 {
     /// <summary>
-    /// Extensions for configuring ACME using an <see cref="IAcmeBuilder"/>.
+    /// Extensions for configuring Acme using an <see cref="IAcmeBuilder"/>.
     /// </summary>
     public static class AcmeBuilderExtensions
     {

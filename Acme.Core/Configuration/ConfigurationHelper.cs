@@ -19,6 +19,8 @@ using System.Linq;
 
 namespace Achilles.Acme.Configuration
 {
+    // TJT: Get rid of this
+
     public class ConfigurationHelper
     {
         private static IConfiguration _configuration;
@@ -41,6 +43,7 @@ namespace Achilles.Acme.Configuration
 
         private static T GetServiceFromCollection<T>( IServiceCollection services )
         {
+            // REVIEW: 
             return (T)services
                 .FirstOrDefault( d => d.ServiceType == typeof( T ) )
                 ?.ImplementationInstance;

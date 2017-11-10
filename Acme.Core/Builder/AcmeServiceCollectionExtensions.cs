@@ -10,21 +10,24 @@
 
 #region Namespaces
 
+using Achilles.Acme.Composition.Modules;
 using Achilles.Acme.Configuration;
-using Achilles.Acme.Filters;
 using Achilles.Acme.Http;
 using Achilles.Acme.Plugins.Services;
 using Achilles.Acme.Razor;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using System;
+using System.Linq;
 
 #endregion
 
-namespace Achilles.Acme.DependencyInjection
+namespace Achilles.Acme.Builder
 {
     /// <summary>
     /// Extension methods for adding Acme services to an <see cref="IServiceCollection" />.
@@ -37,7 +40,7 @@ namespace Achilles.Acme.DependencyInjection
         /// Adds Acme services to the specified <see cref="IServiceCollection" />.
         /// </summary>
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
-        /// <returns>An <see cref="IAcmeBuilder"/> that can be used to further configure the ACME services.</returns>
+        /// <returns>An <see cref="IAcmeBuilder"/> that can be used to further configure Acme services.</returns>
         public static IAcmeBuilder AddAcme( this IServiceCollection services )
         {
             if ( services == null )
@@ -45,7 +48,33 @@ namespace Achilles.Acme.DependencyInjection
                 throw new ArgumentNullException( nameof( services ) );
             }
 
-            return AddAcme( services, setupAction: null );
+            // Configure MVC components
+            var mvcBuilder = services.AddMvcCore();
+
+            services.Configure<RazorViewEngineOptions>( options =>
+            {
+                options.ViewLocationExpanders.Add( new AreaViewComponentLocationExpander() );
+            } );
+
+            // Add Acme services
+            services.TryAddSingleton<IPluginRegistry>( new PluginRegistry() );
+
+            // Acme area viewcomponets depends on IHttpContextAccessor which Hosting doesn't add  by default
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // Configure our HttpContext accessor helper
+            HttpContextAccessorHelper.Configure( services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>() );
+
+            // Add the Acme module feature provider
+            var environment = GetServiceFromCollection<IHostingEnvironment>( services );
+            mvcBuilder.ConfigureApplicationPartManager( manager =>
+            {
+                manager.FeatureProviders.Add( new CompositionFeatureProvider( environment.ApplicationName ) );
+            } );
+
+            var builder = new AcmeBuilder( services, mvcBuilder.PartManager );
+
+            return builder;
         }
 
         /// <summary>
@@ -61,34 +90,27 @@ namespace Achilles.Acme.DependencyInjection
                 throw new ArgumentNullException( nameof( services ) );
             }
 
-            var builder = new AcmeBuilder( services );
-
-            if ( setupAction != null )
+            if ( setupAction == null )
             {
-                services.Configure( setupAction );
+                throw new ArgumentNullException( nameof( setupAction ) );
             }
 
-            // TODO: Remove this need for asp.net core 2...
+            var builder = services.AddAcme();
 
-            // Acme depends on IHttpContextAccessor which Hosting doesn't add  by default
-            // services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            // The plugin registry service is part of the core
-            var pluginRegistry = new PluginRegistry();
-            services.AddSingleton<IPluginRegistry>( pluginRegistry );
-
-            services.Configure<RazorViewEngineOptions>( options =>
-            {
-                options.ViewLocationExpanders.Add( new AreaViewComponentLocationExpander() );
-            } );
-
-            // Configure our HttpContext accessor helper
-            HttpContextAccessorHelper.Configure( services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>() );
-
-            // Add Modules and their services
-            builder.AddModuleServices();
+            services.Configure( setupAction );
 
             return builder;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static T GetServiceFromCollection<T>( IServiceCollection services )
+        {
+            return (T)services
+                .LastOrDefault( d => d.ServiceType == typeof( T ) )
+                ?.ImplementationInstance;
         }
 
         #endregion
